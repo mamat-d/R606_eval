@@ -16,16 +16,12 @@
     </header>
 
     <?php
-    $HOST = getenv('MYSQL_HOST');
-    $USER = getenv('MYSQL_USER');
-    $PWD = getenv('MYSQL_PASSWORD');
-    $DB = getenv('MYSQL_DATABASE');
+    require_once __DIR__ . '/vendor/autoload.php';
+
+    use Mathi\R606Eval\Database;
 
     try {
-        $p = new PDO("mysql:host=$HOST;dbname=$DB;charset=utf8mb4", $USER, $PWD);
-
-        $p->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $p->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
+        $p = Database::getDB();
     } catch (PDOException $e) {
         echo 'Erreur lors de la connexion à la BDD : ' . $e->getMessage();
         exit();
