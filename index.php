@@ -27,6 +27,24 @@
         exit();
     }
 
+    $message = '';
+
+    // Traitement de l'ajout d'une nouvelle entrée
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['text'])) {
+        $text = trim($_POST['text']);
+
+        if (!empty($text)) {
+            try {
+                $newId = Database::addEntry($text);
+                $message = '<p style="color: green; font-weight: bold;">Entrée #' . $newId . ' ajoutée avec succès !</p>';
+            } catch (Exception $e) {
+                $message = '<p style="color: red; font-weight: bold;">Erreur lors de l\'ajout : ' . htmlspecialchars($e->getMessage()) . '</p>';
+            }
+        } else {
+            $message = '<p style="color: orange; font-weight: bold;">Veuillez saisir du texte.</p>';
+        }
+    }
+
     try {
         $d = $p->query("SELECT id,text FROM db_table")->fetchAll(PDO::FETCH_ASSOC);
     } catch (Exception $e) {
@@ -35,6 +53,20 @@
     }
     ?>
 
+    <?php if ($message): ?>
+        <?= $message ?>
+    <?php endif; ?>
+
+    <section style="margin: 20px 0; padding: 15px; border: 2px solid #333; background-color: #f5f5f5;">
+        <h3>Ajouter une nouvelle entrée</h3>
+        <form method="POST" action="">
+            <label for="text">Texte :</label>
+            <input type="text" id="text" name="text" required style="width: 300px; padding: 5px; margin-left: 10px;">
+            <button type="submit" style="padding: 5px 15px; margin-left: 10px; cursor: pointer;">Ajouter</button>
+        </form>
+    </section>
+
+    <h3>Liste des entrées</h3>
     <table>
         <thead style="font-weight: bold;">
             <tr>
