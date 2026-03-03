@@ -8,6 +8,8 @@ Lancer le projet :
 docker compose up -d --build
 ```
 
+`Le serveur web se lance à l'adresse suivante : localhost:8000`
+
 Exécuter les tests unitaires (PHPUnit) :
 
 ```bash
