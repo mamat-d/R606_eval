@@ -18,8 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['text'])) {
 
     if (!empty($text)) {
         try {
-            $newId = Database::addEntry($text);
-            $message = '<p style="color: green; font-weight: bold;">Entrée #' . $newId . ' ajoutée avec succès !</p>';
+            Database::addEntry($text);
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
         } catch (Exception $e) {
             $message = '<p style="color: red; font-weight: bold;">Erreur lors de l\'ajout : ' . htmlspecialchars($e->getMessage()) . '</p>';
         }
