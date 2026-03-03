@@ -1,3 +1,42 @@
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Mathi\R606Eval\Database;
+
+try {
+    $p = Database::getDB();
+} catch (PDOException $e) {
+    echo 'Erreur lors de la connexion à la BDD : ' . $e->getMessage();
+    exit();
+}
+
+$message = '';
+
+// Traitement de l'ajout d'une nouvelle entrée
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['text'])) {
+    $text = trim($_POST['text']);
+
+    if (!empty($text)) {
+        try {
+            Database::addEntry($text);
+            header('Location: ' . $_SERVER['PHP_SELF']);
+            exit();
+        } catch (Exception $e) {
+            $message = '<p style="color: red; font-weight: bold;">Erreur lors de l\'ajout : ' . htmlspecialchars($e->getMessage()) . '</p>';
+        }
+    } else {
+        $message = '<p style="color: orange; font-weight: bold;">Veuillez saisir du texte.</p>';
+    }
+}
+
+try {
+    $d = $p->query("SELECT id,text FROM db_table")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    echo 'Erreur lors du chargement des données : ' . $e->getMessage();
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -15,26 +54,20 @@
         <p style="color: crimson; font-weight: bold; border: solid 2px crimson; padding: 5px; width: fit-content;">Pensez à inviter cdiiv sur votre projet Github</p>
     </header>
 
-    <?php
-    require_once __DIR__ . '/vendor/autoload.php';
+    <?php if ($message): ?>
+        <?= $message ?>
+    <?php endif; ?>
 
-    use Mathi\R606Eval\Database;
+    <section style="margin: 20px 0; padding: 15px; border: 2px solid #333; background-color: #f5f5f5;">
+        <h3>Ajouter une nouvelle entrée</h3>
+        <form method="POST" action="">
+            <label for="text">Texte :</label>
+            <input type="text" id="text" name="text" required style="width: 300px; padding: 5px; margin-left: 10px;">
+            <button type="submit" style="padding: 5px 15px; margin-left: 10px; cursor: pointer;">Ajouter</button>
+        </form>
+    </section>
 
-    try {
-        $p = Database::getDB();
-    } catch (PDOException $e) {
-        echo 'Erreur lors de la connexion à la BDD : ' . $e->getMessage();
-        exit();
-    }
-
-    try {
-        $d = $p->query("SELECT id,text FROM db_table")->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        echo 'Erreur lors du chargement des données : ' . $e->getMessage();
-        exit();
-    }
-    ?>
-
+    <h3>Liste des entrées</h3>
     <table>
         <thead style="font-weight: bold;">
             <tr>

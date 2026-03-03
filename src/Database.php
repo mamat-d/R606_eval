@@ -48,4 +48,21 @@ class Database
     {
         self::$connection = null;
     }
+
+    /**
+     * Ajoute une nouvelle entrée dans la table db_table
+     * 
+     * @param string $text Le texte à insérer
+     * @return int L'ID de l'entrée insérée
+     * @throws PDOException
+     */
+    public static function addEntry(string $text): int
+    {
+        $db = self::getDB();
+        $stmt = $db->prepare("INSERT INTO db_table (text) VALUES (:text)");
+        $stmt->bindParam(':text', $text, PDO::PARAM_STR);
+        $stmt->execute();
+        
+        return (int) $db->lastInsertId();
+    }
 }
