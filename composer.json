@@ -1,0 +1,16 @@
+{
+    "name": "mathi/r606_eval",
+    "description": "TP EVAL R606",
+    "autoload": {
+        "psr-4": {
+            "Mathi\\R606Eval\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "mamat-d",
+            "email": "mathieu.ducrot@iut-dijon.u-bourgogne.fr"
+        }
+    ],
+    "require": {}
+}
