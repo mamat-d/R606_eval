@@ -1,6 +1,8 @@
 # R606_eval
 
 Projet d'évaluation de Maintenance Applicative
+Développé par quelqu'un qui ne code pas très clairement...
+Améliore par quelqu'un qui gère !
 
 Lancer le projet :
 
