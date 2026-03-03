@@ -11,5 +11,11 @@ docker compose up -d --build
 Exécuter les tests unitaires (PHPUnit) :
 
 ```bash
-./vendor/bin/phpunit
+vendor/bin/phpunit
+```
+
+Executer le scan PHPStan :
+
+```bash
+vendor/bin/phpstan analyse
 ```
