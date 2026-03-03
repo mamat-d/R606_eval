@@ -7,3 +7,9 @@ Lancer le projet :
 ```bash
 docker compose up -d --build
 ```
+
+Exécuter les tests unitaires (PHPUnit) :
+
+```bash
+./vendor/bin/phpunit
+```
