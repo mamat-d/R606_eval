@@ -5,5 +5,5 @@ Projet d'évaluation de Maintenance Applicative
 Lancer le projet :
 
 ```bash
-php -S localhost:3000
+docker compose up -d --build
 ```
