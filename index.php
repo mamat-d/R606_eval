@@ -1,3 +1,41 @@
+<?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Mathi\R606Eval\Database;
+
+try {
+    $p = Database::getDB();
+} catch (PDOException $e) {
+    echo 'Erreur lors de la connexion à la BDD : ' . $e->getMessage();
+    exit();
+}
+
+$message = '';
+
+// Traitement de l'ajout d'une nouvelle entrée
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['text'])) {
+    $text = trim($_POST['text']);
+
+    if (!empty($text)) {
+        try {
+            $newId = Database::addEntry($text);
+            $message = '<p style="color: green; font-weight: bold;">Entrée #' . $newId . ' ajoutée avec succès !</p>';
+        } catch (Exception $e) {
+            $message = '<p style="color: red; font-weight: bold;">Erreur lors de l\'ajout : ' . htmlspecialchars($e->getMessage()) . '</p>';
+        }
+    } else {
+        $message = '<p style="color: orange; font-weight: bold;">Veuillez saisir du texte.</p>';
+    }
+}
+
+try {
+    $d = $p->query("SELECT id,text FROM db_table")->fetchAll(PDO::FETCH_ASSOC);
+} catch (Exception $e) {
+    echo 'Erreur lors du chargement des données : ' . $e->getMessage();
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -14,44 +52,6 @@
         <p style="color: crimson">Vous êtes libre de modifier ce que vous souhaitez sur le projet, chaque amélioration (ou début d'amélioration) sera prise en compte dans la notation</p>
         <p style="color: crimson; font-weight: bold; border: solid 2px crimson; padding: 5px; width: fit-content;">Pensez à inviter cdiiv sur votre projet Github</p>
     </header>
-
-    <?php
-    require_once __DIR__ . '/vendor/autoload.php';
-
-    use Mathi\R606Eval\Database;
-
-    try {
-        $p = Database::getDB();
-    } catch (PDOException $e) {
-        echo 'Erreur lors de la connexion à la BDD : ' . $e->getMessage();
-        exit();
-    }
-
-    $message = '';
-
-    // Traitement de l'ajout d'une nouvelle entrée
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['text'])) {
-        $text = trim($_POST['text']);
-
-        if (!empty($text)) {
-            try {
-                $newId = Database::addEntry($text);
-                $message = '<p style="color: green; font-weight: bold;">Entrée #' . $newId . ' ajoutée avec succès !</p>';
-            } catch (Exception $e) {
-                $message = '<p style="color: red; font-weight: bold;">Erreur lors de l\'ajout : ' . htmlspecialchars($e->getMessage()) . '</p>';
-            }
-        } else {
-            $message = '<p style="color: orange; font-weight: bold;">Veuillez saisir du texte.</p>';
-        }
-    }
-
-    try {
-        $d = $p->query("SELECT id,text FROM db_table")->fetchAll(PDO::FETCH_ASSOC);
-    } catch (Exception $e) {
-        echo 'Erreur lors du chargement des données : ' . $e->getMessage();
-        exit();
-    }
-    ?>
 
     <?php if ($message): ?>
         <?= $message ?>
