@@ -1,0 +1,46 @@
+name: Tests PHPUnit & PHPStan
+
+on:
+  pull_request:
+    branches: [master, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: supertp
+          MYSQL_DATABASE: tp
+          MYSQL_USER: cdiiv
+          MYSQL_PASSWORD: superprof
+        ports:
+          - 3306:3306
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.4"
+          extensions: pdo, pdo_mysql
+
+      - name: Install dependencies
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse
+
+      - name: Wait for MySQL
+        run: sleep 10
+
+      - name: Run tests
+        run: vendor/bin/phpunit
+        env:
+          DB_HOST: 127.0.0.1:3306
+          DB_NAME: tp
+          DB_USER: cdiiv
+          DB_PASS: superprof
